@@ -12,282 +12,725 @@ if (!isset($_SESSION['user_email'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Dashboard - Django Girls</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        .sidebar {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
             min-height: 100vh;
-            background-color: #343a40;
-            padding-top: 20px;
-            transition: all 0.3s ease;
+            background: #f8fafc;
+            display: flex;
         }
-        .logo-section {
-            padding: 20px 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
+
+        .sidebar {
+            width: 280px;
+            background: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 2rem;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
         }
-        .logo-text {
-            color: #fff;
-            font-size: 24px;
-            font-weight: bold;
+
+        .logo {
+            margin-bottom: 2.5rem;
+        }
+
+        .logo a {
+            color: #0f172a;
             text-decoration: none;
-            display: block;
-            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        .logo-text:hover {
-            color: #fff;
+
+        .logo i {
+            color: #3b82f6;
+        }
+
+        .nav-menu {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            color: #64748b;
             text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.2s ease;
         }
-        .sidebar a {
-            color: #fff;
-            text-decoration: none;
-            padding: 10px 15px;
-            display: block;
+
+        .nav-link:hover, .nav-link.active {
+            background: #f1f5f9;
+            color: #3b82f6;
         }
-        .sidebar a:hover {
-            background-color: #495057;
+
+        .nav-link i {
+            font-size: 1.25rem;
         }
-        .main-content {
-            padding: 20px;
+
+        .user-profile {
+            margin-top: auto;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
         }
-        .card {
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 12px;
+            transition: all 0.2s ease;
         }
-        .welcome-banner {
-            background: linear-gradient(135deg, #007bff, #0056b3);
+
+        .user-info:hover {
+            background: #f1f5f9;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            font-weight: 600;
         }
-        /* Settings Dropdown Styles */
-        .settings-dropdown {
-            position: relative;
+
+        .user-details {
+            flex: 1;
         }
-        .settings-toggle {
+
+        .user-name {
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-email {
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+
+        .logout-btn {
+            color: #ef4444;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            margin-top: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            background: #fee2e2;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        .settings-menu {
-            display: none;
-            background-color: #2c3136;
-            padding: 5px 0;
-            margin-left: 15px;
-            border-left: 2px solid #007bff;
-        }
-        .settings-dropdown:hover .settings-menu {
-            display: block;
-        }
-        .settings-menu a {
-            padding: 8px 15px;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-        .settings-menu a:hover {
-            background-color: #007bff;
-            padding-left: 20px;
-        }
-        .settings-menu i {
-            width: 20px;
-            text-align: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        /* Mobile Navigation Styles */
-        .mobile-nav-toggle {
-            display: none;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            background: #343a40;
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-bar i {
+            color: #64748b;
+            margin-right: 0.75rem;
+        }
+
+        .search-bar input {
             border: none;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
+            outline: none;
+            background: none;
+            width: 100%;
+            font-size: 0.875rem;
+            color: #0f172a;
+        }
+
+        .search-bar input::placeholder {
+            color: #94a3b8;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
+            color: #64748b;
+            transition: all 0.2s ease;
+        }
+
+        .notification-btn:hover {
+            background: #f1f5f9;
+            color: #3b82f6;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.75rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px -1px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .action-details {
+            flex: 1;
+        }
+
+        .action-title {
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .action-description {
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+
+        .progress-section {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-title {
+            color: #0f172a;
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .view-all {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .course-progress {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .course-progress:last-child {
+            border-bottom: none;
+        }
+
+        .course-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .course-details {
+            flex: 1;
+        }
+
+        .course-name {
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #3b82f6;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            color: #64748b;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .page-title {
+            color: #0f172a;
+            font-size: 1.875rem;
+            font-weight: 700;
+        }
+
+        .welcome-message {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            color: #0f172a;
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .bg-blue {
+            background: #dbeafe;
+            color: #3b82f6;
+        }
+
+        .bg-purple {
+            background: #ede9fe;
+            color: #8b5cf6;
+        }
+
+        .bg-pink {
+            background: #fce7f3;
+            color: #ec4899;
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-label {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .recent-activity {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .activity-details {
+            flex: 1;
+        }
+
+        .activity-title {
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            color: #64748b;
+            font-size: 0.75rem;
         }
 
         @media (max-width: 768px) {
-            .mobile-nav-toggle {
-                display: block;
-            }
-            
             .sidebar {
-                position: fixed;
-                left: -100%;
-                width: 250px;
-                z-index: 999;
-                box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-            }
-            
-            .sidebar.active {
-                left: 0;
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
             }
 
             .main-content {
-                margin-left: 0 !important;
-                width: 100%;
+                margin-left: 0;
+                padding: 1rem;
             }
 
-            .settings-dropdown:hover .settings-menu {
-                display: none;
+            .dashboard-grid {
+                grid-template-columns: 1fr;
             }
 
-            .settings-dropdown.active .settings-menu {
-                display: block;
+            .header {
+                flex-direction: column;
+                align-items: stretch;
             }
 
-            .overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0,0,0,0.5);
-                z-index: 998;
+            .search-bar {
+                max-width: none;
             }
 
-            .overlay.active {
-                display: block;
+            .header-actions {
+                justify-content: flex-end;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Mobile Navigation Toggle -->
-    <button class="mobile-nav-toggle" id="mobileNavToggle">
-        <i class="fas fa-bars"></i>
-    </button>
+    <div class="sidebar">
+        <div class="logo">
+            <a href="dashboard.php">
+                <i class="fas fa-code"></i>
+                <span>Django Girls</span>
+            </a>
+        </div>
 
-    <!-- Overlay for mobile -->
-    <div class="overlay" id="overlay"></div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="dashboard.php" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
 
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 sidebar" id="sidebar">
-                <!-- Logo Section -->
-                <div class="logo-section">
-                    <a href="#" class="logo-text">
-                        <i class="fas fa-code me-2"></i>Django Girls
-                    </a>
+        <div class="user-profile">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <?php echo strtoupper(substr($_SESSION['user_name'], 0, 1)); ?>
                 </div>
-                <div class="text-center mb-4">
-                    <i class="fas fa-user-circle fa-3x text-white"></i>
-                    <h5 class="text-white mt-2"><?php echo $_SESSION['user_name']; ?></h5>
-                </div>
-                <nav>
-                    <a href="#"><i class="fas fa-home me-2"></i> Dashboard</a>
-                    <a href="#"><i class="fas fa-user me-2"></i> View Profile</a>
-                    <div class="settings-dropdown">
-                        <a href="#" class="settings-toggle"><i class="fas fa-cog me-2"></i> Settings <i class="fas fa-chevron-down ms-2"></i></a>
-                        <div class="settings-menu">
-                            <a href="settings/account-security.php"><i class="fas fa-user-shield me-2"></i> Account Security</a>
-                            <a href="settings/notifications.php"><i class="fas fa-bell me-2"></i> Notification Preferences</a>
-                            <a href="settings/theme.php"><i class="fas fa-palette me-2"></i> Theme Settings</a>
-                            <a href="#"><i class="fas fa-language me-2"></i> Language</a>
-                            <a href="#"><i class="fas fa-lock me-2"></i> Privacy Settings</a>
-                            <a href="#"><i class="fas fa-key me-2"></i> Change Password</a>
-                        </div>
-                    </div>
-                    <a href="logout.php"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
-                </nav>
-            </div>
-
-            <!-- Main Content -->
-            <div class="col-md-9 col-lg-10 main-content">
-                <div class="welcome-banner">
-                    <h2>Welcome back, <?php echo $_SESSION['user_name']; ?>!</h2>
-                    <p>Here's what's happening with your account today.</p>
-                </div>
-
-                <div class="row">
-                    <!-- Quick Stats -->
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title"><i class="fas fa-chart-line me-2"></i>Account Status</h5>
-                                <p class="card-text">Your account is active and secure.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title"><i class="fas fa-bell me-2"></i>Notifications</h5>
-                                <p class="card-text">You have no new notifications.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title"><i class="fas fa-shield-alt me-2"></i>Security</h5>
-                                <p class="card-text">Last login: <?php echo date('Y-m-d H:i:s'); ?></p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="user-details">
+                    <div class="user-name"><?php echo $_SESSION['user_name']; ?></div>
+                    <div class="user-email"><?php echo $_SESSION['user_email']; ?></div>
                 </div>
             </div>
+            <a href="logout.php" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
         </div>
     </div>
 
-    <!-- Bootstrap JS and dependencies -->\
-     \
+    <div class="main-content">
+        <div class="header">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search courses, lessons, or resources...">
+            </div>
+            <div class="header-actions">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+            </div>
+        </div>
 
-     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Mobile Navigation Toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileNavToggle = document.getElementById('mobileNavToggle');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            const settingsDropdowns = document.querySelectorAll('.settings-dropdown');
+        <div class="quick-actions">
+            <div class="action-card">
+                <div class="action-icon bg-blue">
+                    <i class="fas fa-play"></i>
+                </div>
+                <div class="action-details">
+                    <div class="action-title">Continue Learning</div>
+                    <div class="action-description">Resume your last course</div>
+                </div>
+            </div>
+            <div class="action-card">
+                <div class="action-icon bg-purple">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="action-details">
+                    <div class="action-title">Browse Courses</div>
+                    <div class="action-description">Explore new courses</div>
+                </div>
+            </div>
+            <div class="action-card">
+                <div class="action-icon bg-pink">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="action-details">
+                    <div class="action-title">Community</div>
+                    <div class="action-description">Connect with learners</div>
+                </div>
+            </div>
+        </div>
 
-            // Toggle sidebar
-            mobileNavToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-                this.querySelector('i').classList.toggle('fa-bars');
-                this.querySelector('i').classList.toggle('fa-times');
-            });
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Total Courses</h2>
+                    <div class="card-icon bg-blue">
+                        <i class="fas fa-book"></i>
+                    </div>
+                </div>
+                <div class="card-value">12</div>
+                <div class="card-label">Available courses</div>
+            </div>
 
-            // Close sidebar when clicking overlay
-            overlay.addEventListener('click', function() {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                mobileNavToggle.querySelector('i').classList.add('fa-bars');
-                mobileNavToggle.querySelector('i').classList.remove('fa-times');
-            });
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Progress</h2>
+                    <div class="card-icon bg-purple">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+                <div class="card-value">75%</div>
+                <div class="card-label">Course completion</div>
+            </div>
 
-            // Handle settings dropdown on mobile
-            settingsDropdowns.forEach(dropdown => {
-                const toggle = dropdown.querySelector('.settings-toggle');
-                toggle.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    dropdown.classList.toggle('active');
-                });
-            });
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Achievements</h2>
+                    <div class="card-icon bg-pink">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                </div>
+                <div class="card-value">8</div>
+                <div class="card-label">Badges earned</div>
+            </div>
+        </div>
 
-            // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', function(e) {
-                if (window.innerWidth <= 768) {
-                    if (!sidebar.contains(e.target) && !mobileNavToggle.contains(e.target)) {
-                        sidebar.classList.remove('active');
-                        overlay.classList.remove('active');
-                        mobileNavToggle.querySelector('i').classList.add('fa-bars');
-                        mobileNavToggle.querySelector('i').classList.remove('fa-times');
-                    }
-                }
-            });
-        });
-    </script>
+        <div class="progress-section">
+            <div class="progress-header">
+                <h2 class="progress-title">Course Progress</h2>
+                <a href="#" class="view-all">View All</a>
+            </div>
+            <div class="course-progress">
+                <div class="course-icon bg-blue">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="course-details">
+                    <div class="course-name">Python Basics</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%"></div>
+                    </div>
+                    <div class="progress-text">75% Complete</div>
+                </div>
+            </div>
+            <div class="course-progress">
+                <div class="course-icon bg-purple">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div class="course-details">
+                    <div class="course-name">Django Fundamentals</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 45%"></div>
+                    </div>
+                    <div class="progress-text">45% Complete</div>
+                </div>
+            </div>
+            <div class="course-progress">
+                <div class="course-icon bg-pink">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <div class="course-details">
+                    <div class="course-name">Web Development</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 30%"></div>
+                    </div>
+                    <div class="progress-text">30% Complete</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="recent-activity">
+            <h2 class="card-title">Recent Activity</h2>
+            <ul class="activity-list">
+                <li class="activity-item">
+                    <div class="activity-icon bg-blue">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-title">Completed Python Basics</div>
+                        <div class="activity-time">2 hours ago</div>
+                    </div>
+                </li>
+                <li class="activity-item">
+                    <div class="activity-icon bg-purple">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-title">Started Django Project</div>
+                        <div class="activity-time">5 hours ago</div>
+                    </div>
+                </li>
+                <li class="activity-item">
+                    <div class="activity-icon bg-pink">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-title">Earned "Quick Learner" Badge</div>
+                        <div class="activity-time">1 day ago</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
 </body>
 </html>
